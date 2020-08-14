@@ -2,8 +2,11 @@ import React from "react"
 
 /** class-based component */
 class Item extends React.Component {
-    render() {
+    componentWillUnmount() {
+        alert("Item about to be deleted!");
+    }
 
+    render() {
         const completedStyle = {
             forntStyle: "italic",
             color: "#d35e0f",
