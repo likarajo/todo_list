@@ -1,11 +1,13 @@
-import React from "react"
-//import { v4 as uuidv4 } from "uuid"
+import React, { useState, useEffect } from "react"
+//import uuid from "uuid"
 import axios from "axios"
 
 import Header from "./Header"
 import List from "./List"
 import Input from "./Input"
 
+/** Class-based component */
+/*
 class Container extends React.Component {
 
     state = {
@@ -80,6 +82,70 @@ class Container extends React.Component {
             </div>
         );
     }
+}
+*/
+
+/** Function component */
+const Container = (props) => {
+    const [todos, setTodos] = useState([])
+    const [show, setShow] = useState(false)
+
+    const handleChange = (id) => { 
+        setTodos(
+            todos.map(todo => {
+                if (todo.id === id) {
+                    todo.completed = !todo.completed;
+                }
+                return todo
+            })   
+        )
+        setShow(!show)
+    }
+
+    const deleteItem = (id) => {
+        axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        .then(response =>
+            setTodos([
+                ...todos.filter(todo => {
+                    return todo.id !== id
+                })
+            ])
+        )
+    }
+
+    const addItem = (title) => {
+        axios.post("https://jsonplaceholder.typicode.com/todos", {
+            title: title,
+            completed: false,
+        })
+        .then(response =>
+            setTodos([
+                ...todos, response.data
+            ])
+        )
+    }
+
+    useEffect(() => {
+        axios
+            .get("https://jsonplaceholder.typicode.com/todos?_limit=10")
+            .then(response => setTodos(response.data))
+    }, [])
+
+    return (
+        <div className="container">
+            <Header headerSpan={show} />
+            <Input 
+                addItemProps={addItem}
+            />
+            <List 
+                todos={todos} 
+                handleChangeProps={handleChange} 
+                deleteItemProps={deleteItem}
+            />
+        </div>
+    )
+
+
 }
 
 export default Container

@@ -1,5 +1,9 @@
-import React, {Component} from "react"
+import React from "react"
+//import { Component } from "react"
+import { useState } from "react"
 
+/** Class-based component */
+/*
 class Input extends Component {
 
     state = {
@@ -41,6 +45,46 @@ class Input extends Component {
             </form>
         )
     }
+}
+*/
+
+/** Function component */
+const Input = (props) => {
+    const [inputText, setInputText] = useState({
+        title: "",
+    })
+
+    const handleChange = (e) => {
+        setInputText({
+            ...inputText, [e.target.name]: e.target.value,
+        })   
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        props.addItemProps(inputText.title)
+        setInputText({
+            title: "",
+        })
+    }
+    
+    return (
+        <form onSubmit={handleSubmit} className="form-container">
+            <input 
+                type="text" 
+                placeholder="Add Item..." 
+                name="title"
+                value={inputText.title} 
+                onChange={handleChange}
+                className="input-text"
+            />
+            <input 
+                type="submit" 
+                value="Submit" 
+                className="input-submit"
+            />
+        </form>
+    )
 }
 
 export default Input
